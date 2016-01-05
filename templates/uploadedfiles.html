@@ -1,0 +1,32 @@
+{% extends "template.html" %}
+{% block content %}
+
+{% if listOfFiles > 0 %}
+  <div class="container">
+    <div class="starter-template">
+    	    <form action='/uploadedfiles' method="POST" class="form-delete" id="deleteForm">
+      <div id="sheets">
+        <table id="table1" class="table">
+          <thread>
+          <tr>
+            <th>Filnavn</th>
+              <tbody>
+              {% for file in listOfFiles %}
+                  <tr><td class="text-left"> {{ file }} <input type="checkbox" id="box" name="{{ file }}" value="Bike"><br> </td> </tr>
+              {% endfor %}
+            </tr></tbody>
+          </thread>
+        </table>
+      </div>
+          <button type="submit" class="btn btn-danger" id="deleteButton" method="post">Slett markerte</button>
+              <form action='/results' method="GET" class="form-search" id="searchForm">
+    </div>
+    {% else %}
+    <div class="starter-template">
+    <h1>Ingen filer i mappen</h1>
+  </div>
+</div>
+    {% endif %}
+
+
+{% endblock %}

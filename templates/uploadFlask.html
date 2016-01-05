@@ -1,0 +1,9 @@
+{% extends "template.html" %}
+{% block content %}
+  <div class="starter-template" id="searchField">
+  		<form method="POST" enctype="multipart/from-data" action="{{ url_for('upload) }}">
+  			<input type="file" name="excel">
+  			<input type="submit">
+	</div>
+
+{% endblock %} 

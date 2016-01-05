@@ -1,0 +1,42 @@
+
+#login {
+    width: 50%;
+    margin: 0 auto;
+    margin-top: 50px;
+}
+
+#logForm {
+    width: 50%;
+    margin: 0 auto;
+}
+
+#searchField {
+	width: 50%;
+	margin: 0 auto;
+}
+
+.dropzone {
+	border-radius: 4%;
+	width: 500px;
+	margin: 0 auto;
+	height: 300px;
+	border: 2px dashed #ccc;
+	color: #ccc;
+	line-height: 300px;
+	text-align: center;
+	font-size: 30px;
+}
+
+.dropzone.dragover {
+	border-color: #000;
+	color: #000;
+}
+
+#box {
+	float:right;
+}
+
+#deleteButton {
+	float:left;
+}
+

@@ -1,0 +1,40 @@
+{% extends "template.html" %}
+{% block content %}
+
+  <div class="container">
+    {% if orderListLength > 0 %}
+    <div class="starter-template">
+      <div id="date">
+        <table id="table" class="table">
+          <thread>
+          <tr>
+            <th>Dato</th>
+              <th>Avreise tid</th>
+              <th>Fremmøtested</th>
+              <th>Oppdrag</th> 
+              <th>Kunde/Gruppe</th>
+              <th>Antall</th>
+              <th>Buss</th>
+              <th>Mobil</th>
+              </tr>
+              <tbody>
+              {% for item in listOfOrders %}
+                <tr>
+                  {% for element in item %}
+                  <td class="text-left"> {{ element }} </td>
+                  {% endfor %}
+                </tr>
+              {% endfor %}
+            </tr></tbody>
+          </thread>
+        </table>
+      </div>
+    </div>
+    {% else %}
+    <div class="starter-template">
+    <h1>Ingen ordre på spesifisert dato</h1>
+  </div>
+    {% endif %}
+  </div><!-- /.container -->
+
+{% endblock %}
