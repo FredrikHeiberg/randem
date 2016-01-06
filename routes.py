@@ -1,5 +1,5 @@
 # coding=utf-8
-from flask import Flask, render_template, request, url_for, redirect, session, flash, g
+from flask import Flask, render_template, request, url_for, redirect, session, flash, g, abort 
 from functools import wraps
 from flask.ext.uploads import UploadSet, configure_uploads, DOCUMENTS
 from werkzeug import secure_filename
@@ -17,7 +17,7 @@ app.database = "sample.db"
 formatedList = []
 
 ALLOWED_EXTENSIONS = set(['xlsx'])
-#CsrfProtect(app)
+CsrfProtect(app)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 #excelFiles = UploadSet('excelf', DOCUMENTS)
 
@@ -250,6 +250,7 @@ def connect_db():
 #        token = session.pop('_csrf_token', None)
 #        if not token or token != request.form.get('_csrf_token'):
 #            abort(403)
+#            print "ABOOOOOOORRRTT!!"
 
 #def generate_csrf_token():
 #    if '_csrf_token' not in session:
