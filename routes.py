@@ -1,12 +1,20 @@
-from flask import Flask, render_template, request, url_for, redirect
+# coding=utf-8
+from flask import Flask, render_template, request, url_for, redirect, session, flash, g
+from functools import wraps
 from flask.ext.uploads import UploadSet, configure_uploads, DOCUMENTS
 from werkzeug import secure_filename
+from utils import UPLOAD_FOLDER
 import os, glob, xlrd
+import sqlite3
+
 
 app = Flask(__name__)
-validate = False
+
+app.secret_key = "p1sJ24AcT9"
+app.database = "sample.db"
+
 formatedList = []
-UPLOAD_FOLDER = '/Users/fredrikheiberg/Documents/randem/sheets/'
+
 ALLOWED_EXTENSIONS = set(['xlsx'])
 
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
@@ -15,11 +23,25 @@ app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 #app.config['UPLOADED_FILES_DEST'] = '/sheets'
 #configure_uploads(app, excelFiles)
 
+def login_required(f):
+	@wraps(f)
+	def wrap(*args, **kwargs):
+		if 'logged_in' in session:
+			return f(*args, **kwargs)
+		else:
+			return redirect(url_for('login'))
+	return wrap
+
 @app.route('/', methods=['GET', 'POST'])
+@login_required
 def index():
 	error = None
-	if validate == False:
-		return redirect(url_for('login'))
+
+	#g.db = connect_db()
+	#cur = g.db.execute('select * from posts')
+	#posts = [dict(title=row[0], description=row[1]) for row in cur.fetchall()]
+	#g.db.close()
+
 	return render_template('index.html', error=error)
 
 
@@ -36,9 +58,8 @@ def index():
 #	return render_template('index.html', user=user)
 
 @app.route('/results', methods=['GET'])
+@login_required
 def results():
-	if validate == False:
-		return redirect(url_for('login'))
 
 	listOfOrders = getInfoFromExcel()
 	orderListLength = len(listOfOrders)
@@ -46,25 +67,23 @@ def results():
 	return render_template('results.html', listOfOrders=listOfOrders, orderListLength=orderListLength)
 
 @app.route('/create')
+@login_required
 def create():
-	if validate == False:
-		return redirect(url_for('login'))
 	return render_template('create.html')
 
 @app.route('/order')
+@login_required
 def order():
-	if validate == False:
-		return redirect(url_for('login'))
 	return render_template('order.html')
 
 #@app.route('/upload')
+#@login_required
 #def upload():
-#	return render_template('upload.html')
+#	return render_template('upload_file.html')
 
 @app.route('/uploadedfiles', methods=['GET', 'POST'])
+@login_required
 def uploadedfiles():
-	if validate == False:
-		return redirect(url_for('login'))
 	listOfFiles = []
 	listOfFiles = getListOfSheets()
 
@@ -90,9 +109,8 @@ def uploadedfiles():
 #	return render_template('upload.html')
 
 @app.route('/upload', methods=['GET', 'POST'])
+@login_required
 def upload_file():
-	if validate == False:
-		return redirect(url_for('login'))
 	if request.method == 'POST':
 		file = request.files['file']
 		if file and allowed_file(file.filename):
@@ -109,25 +127,29 @@ def login():
 		if request.form['username'] != 'admin' or request.form['password'] != 'admin':
 			error = 'Feil brukernavn/passord'
 		else:
-			global validate
-			validate = True
+			session['logged_in'] = True
+			flash('Du er naa logget inn!')
 			return redirect(url_for('index'))
 	return render_template('login.html', error=error)
 
 @app.route('/logout')
+@login_required
 def logout():
-	if validate == False:
-		return redirect(url_for('login'))
-	error=None
-	global validate
-	validate = False
+	session.pop('logged_in', None)
+	flash('Du er naa logget ut!')
 	return redirect(url_for('index'))
+#	if validate == False:
+#		return redirect(url_for('login'))
+#	error=None
+#	global validate
+#	validate = False
+#	return redirect(url_for('index'))
 
 def getInfoFromExcel():
 	listOfOrders = []
 
 	# Set directory where the sheets are 
-	os.chdir('/Users/fredrikheiberg/Documents/randem/sheets')
+	os.chdir(str(UPLOAD_FOLDER))
 
 	# Gather search field conditions and create a list of corresponding files
 	searchCondition = str(request.args.get('date'))
@@ -137,7 +159,8 @@ def getInfoFromExcel():
 	# information from each sheet (List in list - a list of all sheets that 
 	# have a list of relevant information)
 	for sh in fileList:
-		file_location = '/Users/fredrikheiberg/Documents/randem/sheets/%s' %sh
+		tempFileLocation = str(UPLOAD_FOLDER)
+		file_location = tempFileLocation + "/%s" %sh
 		orderDetails = []
 	
 		workbook = xlrd.open_workbook(file_location)
@@ -199,7 +222,7 @@ def allowed_file(filename):
 def getListOfSheets():
 	global formatedList;
 	#formatedList = glob.glob('sheets/*.xlsx')
-	formatedList = os.listdir('/Users/fredrikheiberg/Documents/randem/sheets/')
+	formatedList = os.listdir(str(UPLOAD_FOLDER))
 	listOfUploadedFiles = []
 	for element in formatedList:
 		#tempString = element.split("/")
@@ -215,7 +238,10 @@ def delete_item(item_id):
     #self.session.delete(item)
     #db.session.commit()
     #print "DETTE SKAL SLETTES %s" %item_id
-    os.remove('/Users/fredrikheiberg/Documents/randem/sheets/%s' %item_id)
+    os.remove(str(UPLOAD_FOLDER)+"/%s" %item_id)
+
+def connect_db():
+	return sqlite3.connect(app.database)
 
 if __name__ == '__main__':
 	app.run(debug=True) 

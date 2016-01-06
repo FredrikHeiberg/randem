@@ -42,7 +42,7 @@
           request.form.password }}"><br>
         <input class="btn btn-default" type="submit" value="Login">
         {% if error %}
-        <br>
+        <br><br> <!-- TODO: Add Boostrap design to error -->
           <p class="error"><strong>Error:</strong> {{ error }}
         {% endif %}
       </form>
