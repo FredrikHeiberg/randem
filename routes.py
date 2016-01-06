@@ -4,7 +4,7 @@ from functools import wraps
 from flask.ext.uploads import UploadSet, configure_uploads, DOCUMENTS
 from werkzeug import secure_filename
 from utils import UPLOAD_FOLDER
-#from flask_wtf.csrf import CsrfProtect
+from flask_wtf.csrf import CsrfProtect
 import os, glob, xlrd
 import sqlite3
 
@@ -17,7 +17,7 @@ app.database = "sample.db"
 formatedList = []
 
 ALLOWED_EXTENSIONS = set(['xlsx'])
-#CsrfProtect(app)
+CsrfProtect(app)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 #excelFiles = UploadSet('excelf', DOCUMENTS)
 
