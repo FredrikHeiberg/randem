@@ -37,7 +37,7 @@ def login_required(f):
 @login_required
 def index():
 	error = None
-
+	print "TEST!"
 	#g.db = connect_db()
 	#cur = g.db.execute('select * from posts')
 	#posts = [dict(title=row[0], description=row[1]) for row in cur.fetchall()]
