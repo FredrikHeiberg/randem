@@ -17,7 +17,7 @@ app.database = "sample.db"
 formatedList = []
 
 ALLOWED_EXTENSIONS = set(['xlsx'])
-CsrfProtect(app)
+#CsrfProtect(app)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 #excelFiles = UploadSet('excelf', DOCUMENTS)
 
