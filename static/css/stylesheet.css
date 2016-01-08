@@ -1,3 +1,11 @@
+body {
+	/*background: url('../img/backgroundColor.png'); */
+	background-color: #ECECEC;
+}
+.navbar-default {
+    background-color: #cccccc;
+    border-color: #E7E7E7;
+}
 
 #login {
     width: 50%;
@@ -32,6 +40,10 @@
 	color: #000;
 }
 
+#download {
+	float: left;
+}
+
 #box {
 	float:right;
 }
@@ -43,4 +55,32 @@
 #addButton {
 	float:left;
 }
+
+#searchButton {
+	float:left;
+    width: 7em;
+}
+
+#searchDiv {
+	margin-top: 60px;
+}
+
+#inputFieldsCreate {
+	float: right;
+}
+
+#createButton {
+	float:right;
+}
+
+#extraInfo {
+	height: 100px;
+}
+
+#assignment {
+	height: 100px;
+}
+
+
+
 

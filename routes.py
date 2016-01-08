@@ -1,22 +1,33 @@
 # coding=utf-8
-from flask import Flask, render_template, request, url_for, redirect, session, flash, g, abort 
+from flask import Flask, render_template, request, url_for, redirect, session, flash, g, abort, send_from_directory
 from functools import wraps
 from flask.ext.uploads import UploadSet, configure_uploads, DOCUMENTS
+from xlrd import *
+from xlutils.copy import copy
 from werkzeug import secure_filename
 from utils import UPLOAD_FOLDER
 from flask_wtf.csrf import CsrfProtect
-import os, glob, xlrd
-import sqlite3
+from flask.ext.sqlalchemy import SQLAlchemy
+from datetime import date, timedelta as td
+import os, glob, xlrd, datetime, re
+from xlutils.filter import process,XLRDReader,XLWTWriter
+#import sqlite3
 
+#
+#	NOTE TO SELF: evt aapne hver fil og soke paa dato i filen - slippe aa kalle filen noe spess
+#				  men trenger da soke gjennom alle filene
+#
+#
 
 app = Flask(__name__)
 
 app.secret_key = "p1sJ24AcT9"
-app.database = "sample.db"
 
 formatedList = []
+listOfOrders = []
+infoList = []
 
-ALLOWED_EXTENSIONS = set(['xlsx'])
+ALLOWED_EXTENSIONS = set(['xlsx','xls'])
 CsrfProtect(app)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 #excelFiles = UploadSet('excelf', DOCUMENTS)
@@ -37,7 +48,6 @@ def login_required(f):
 @login_required
 def index():
 	error = None
-	print "TEST!"
 	#g.db = connect_db()
 	#cur = g.db.execute('select * from posts')
 	#posts = [dict(title=row[0], description=row[1]) for row in cur.fetchall()]
@@ -120,6 +130,20 @@ def upload_file():
 			return redirect(url_for('index'))
 	return render_template('upload_file.html')
 
+@app.route('/download', methods=['GET', 'POST'])
+@login_required
+def download():
+	listOfFiles = []
+	listOfFiles = getListOfSheets()
+
+	if request.method == 'GET':
+		fileNamePath = UPLOAD_FOLDER+"/TEST.xls"
+
+		return download_item(fileNamePath)
+
+	return redirect(url_for('uploadedfiles'))
+
+### TODO: ERROR OM FEIL FORMAT I SØKEFELT!!
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 	error = None
@@ -139,22 +163,97 @@ def logout():
 	session.pop('logged_in', None)
 	flash('Du er naa logget ut!')
 	return redirect(url_for('index'))
-#	if validate == False:
-#		return redirect(url_for('login'))
-#	error=None
-#	global validate
-#	validate = False
-#	return redirect(url_for('index'))
+
+@app.route('/createFile', methods=['GET', 'POST'])
+@login_required
+def createFile():
+	error = None
+
+	global infoList
+	infoList = []
+	if request.method == 'POST':
+		# Gather search field conditions and create a list of corresponding files
+		orderNumber = str(request.form['oNr'])
+		customerGrp = str(request.form['group'])
+		dateDate = str(request.form['dOfOrder'])
+		departmentTime = str(request.form['time'])
+		meetingPlace = str(request.form['depPlace'])
+		numPers = str(request.form['nPeople'])
+		assignment = str(request.form['assignment'])
+		otherInfo = str(request.form['eInfo'])
+		executeBy = str(request.form['pBy'])
+		mobileNumber = str(request.form['mobileNr'])
+		price = str(request.form['price'])
+		sheetName = str(request.form['dName'])
+
+		infoList.append(orderNumber)
+		infoList.append(customerGrp)
+		infoList.append(dateDate)
+		infoList.append(departmentTime)
+		infoList.append(meetingPlace)
+		infoList.append(numPers)
+		infoList.append(assignment)
+		infoList.append(otherInfo)
+		infoList.append(executeBy)
+		infoList.append(mobileNumber)
+		infoList.append(price)
+		infoList.append(sheetName)
+
+		createDocument()
+		return render_template('index.html')
+
+	return render_template('createFile.html', error=error)
 
 def getInfoFromExcel():
+	global listOfOrders
 	listOfOrders = []
-
+	searchConditionList = []
+	datetimeList = []
 	# Set directory where the sheets are 
 	os.chdir(str(UPLOAD_FOLDER))
 
 	# Gather search field conditions and create a list of corresponding files
-	searchCondition = str(request.args.get('date'))
-	fileList = glob.glob('%s-*.xlsx' %searchCondition)
+	searchConditionOne = str(request.args.get('date'))
+	searchConditionList.append(searchConditionOne)
+	searchConditionTwo = str(request.args.get('date2'))
+	searchConditionList.append(searchConditionTwo)
+
+	if (len(searchConditionList) == 2):
+		# if statement does not work (both of them!)
+		if re.match('\d{2}.\d{2}.\d{4}',searchConditionList[0]) is not None:
+			firstDate = datetime.datetime.strptime(searchConditionList[0].translate(None, '.'), '%d%m%Y').date()
+		else:
+			firstDate = ""
+			secondDate = ""
+
+		if re.match('\d{2}.\d{2}.\d{4}',searchConditionList[1]) is not None:
+			secondDate = datetime.datetime.strptime(searchConditionList[1].translate(None, '.'), '%d%m%Y').date()
+			print "S: %s" %secondDate
+		else:
+			secondDate = 0
+			loopDatesExcel(searchConditionList[0])
+
+		if secondDate != 0:
+			delta = secondDate - firstDate
+			day = datetime.timedelta(days=1)
+			for i in range(delta.days + 1):
+				searchDate = firstDate + td(days=i)
+				dateToString = searchDate.strftime('%d.%m.%Y')
+				loopDatesExcel(dateToString)
+
+	else:
+		loopDatesExcel(searchConditionList[0])
+	return listOfOrders
+
+
+### TODO: Change to loop over date value in sheet - not file name
+def loopDatesExcel(dateValue):
+
+	global listOfOrders
+	searchCondition = dateValue
+	#fileList = glob.glob('%s-*.xls*' %searchCondition)
+
+	fileList = glob.glob('*.xls*')
 
 	# Iterate through all corresponding files and create a list with relevant 
 	# information from each sheet (List in list - a list of all sheets that 
@@ -167,50 +266,63 @@ def getInfoFromExcel():
 		workbook = xlrd.open_workbook(file_location)
 		sheet = workbook.sheet_by_index(0)
 
-		# Dato, ank tid, sted, oppdrag, kunde, buss, mobil
-		# TODO! add functionality if field is not filled in!!!!!
+		if re.match('\d{2}.\d{2}.\d{4}', getCellInfo(3,1,sheet)) is not None:
+			print "YEYEYEYEYEYEYE"
 
-		# Date
-		cellValue = getCellInfo(4,1,sheet)
-		cellDateValue = xlrd.xldate_as_tuple(cellValue, workbook.datemode)
-		dateString = str(cellDateValue[2])+"."+str(cellDateValue[1])+"."+str(cellDateValue[0])
-		orderDetails.append(dateString)
+		print "TEST CELL VALUE %s" %getCellInfo(3,1,sheet)
+		if getCellInfo(3,1,sheet) == searchCondition and re.match('\d{2}.\d{2}.\d{4}', getCellInfo(3,1,sheet)) is not None:
+			print "CONDITION MEET"
+			# Dato, ank tid, sted, oppdrag, kunde, buss, mobil
+			# TODO! add functionality if field is not filled in!!!!!
 
-		# Arrival time
-		timeOfOrder = getCellInfo(5,1,sheet)
-		orderDetails.append(timeOfOrder)
+			# Date
+			cellValue = getCellInfo(3,1,sheet)
+			#if cellValue != "Ikke spesifisert":
+			orderDetails.append(cellValue)
 
-		# Place
-		place = getCellInfo(6,1,sheet)
-		orderDetails.append(place)
+			#print "TEEEEESSSSSSTTTT"
+			#cellDateValue = xlrd.xldate_as_tuple(cellValue, workbook.datemode)
+			#dateString = str(cellDateValue[2])+"."+str(cellDateValue[1])+"."+str(cellDateValue[0])
+			#orderDetails.append(dateString)
+			#else:
+			#orderDetails.append(cellValue)
 
-		# Order description
-		orderDescription = getCellInfo(8,1,sheet)
-		orderDetails.append(orderDescription)
+			# Arrival time
+			timeOfOrder = getCellInfo(4,1,sheet)
+			orderDetails.append(timeOfOrder)
 
-		# Customer
-		customer = getCellInfo(2,1,sheet)
-		orderDetails.append(customer)
+			# Place
+			place = getCellInfo(5,1,sheet)
+			orderDetails.append(place)
 
-		# Number of People
-		tempNumberOfPeople = getCellInfo(7,1,sheet)
-		numberOfPeople = str(tempNumberOfPeople).split(".")
-		orderDetails.append(numberOfPeople[0])
+			# Order description
+			orderDescription = getCellInfo(7,1,sheet)
+			orderDetails.append(orderDescription)
 
-		# Buss
-		buss = sheet.cell_value(10,1)
-		orderDetails.append(buss)
+			# Customer
+			customer = getCellInfo(2,1,sheet)
+			orderDetails.append(customer)
 
-		# Telephone number
-		cellNumber = sheet.cell_value(11,1)
-		orderDetails.append(cellNumber)
+			# Number of People
+			tempNumberOfPeople = getCellInfo(6,1,sheet)
+			numberOfPeople = str(tempNumberOfPeople).split(".")
+			orderDetails.append(numberOfPeople[0])
 
-		listOfOrders.append(orderDetails)
+			# Buss
+			buss = sheet.cell_value(9,1)
+			orderDetails.append(buss)
 
-		sortedList = listOfOrders.sort();
-	return listOfOrders
+			# Telephone number
+			cellNumber = sheet.cell_value(10,1)
+			orderDetails.append(cellNumber)
+
+			listOfOrders.append(orderDetails)
+
+			sortedList = listOfOrders.sort();
+#	return listOfOrders
 
 def getCellInfo(row,col,sheet):
+	print "ROW %s COL %s" %(row, col)
 	if sheet.cell_value(row,col) != "":
 		return sheet.cell_value(row,col)
 	else:
@@ -222,12 +334,11 @@ def allowed_file(filename):
 
 def getListOfSheets():
 	global formatedList;
-	#formatedList = glob.glob('sheets/*.xlsx')
 	formatedList = os.listdir(str(UPLOAD_FOLDER))
 	listOfUploadedFiles = []
 	for element in formatedList:
 		#tempString = element.split("/")
-		if element.endswith('.xlsx'):
+		if element.endswith('.xlsx') or element.endswith('.xls'):
 			listOfUploadedFiles.append(element)
 		#listOfUploadedFiles.append(tempString[1])
 	return listOfUploadedFiles
@@ -241,6 +352,45 @@ def delete_item(item_id):
     #print "DETTE SKAL SLETTES %s" %item_id
     os.remove(str(UPLOAD_FOLDER)+"/%s" %item_id)
 
+def download_item(item_id):
+	return send_from_directory(UPLOAD_FOLDER, "TEST.xls")
+
+def createDocument():
+	global infoList
+	searchCondition = "newTemplateTest.xls"
+
+	#workbook = copy(open_workbook(UPLOAD_FOLDER+"/%s"%searchCondition, formatting_info=True, on_demand=True))
+	workbook = xlrd.open_workbook(UPLOAD_FOLDER+"/%s"%searchCondition, formatting_info=True, on_demand=True)
+	inSheet = workbook.sheet_by_index(0)
+	outBook, outStyle = copy2(workbook)
+	#workbook.save(UPLOAD_FOLDER+"/testMal"+".xls")
+
+	# Looper through all elements except the last one (name of file)
+	for i in range(len(infoList) - 1):
+		xf_index = inSheet.cell_xf_index(i+1, 1)
+		saved_style = outStyle[xf_index]
+		outBook.get_sheet(0).write(i+1,1,infoList[i], saved_style)
+		#workbook.get_sheet(0).write(i+1,1,infoList[i])
+
+	# Set the name of the file
+	outBook.save(UPLOAD_FOLDER+"/%s"%infoList[len(infoList)-1]+".xls")
+	#outBook.ExportAsFixedFormat(0, UPLOAD_FOLDER+"/%s"%infoList[len(infoList)-1]+".pdf")
+
+# Copy formating of excel sheet
+def copy2(wb):
+	w = XLWTWriter()
+	process(
+		XLRDReader(wb,'unknown.xls'), w)
+	return w.output[0][1], w.style_list
+
+
+#
+# Excel to PDF convert - use command line unoconv -f pdf your_excel.xls - read on this (will only work on the server)
+#
+#
+#	
+
+#w = copy(open_workbook('/Users/fredrikheiberg/Documents/randem/static/sheets/mal.xls',formatting_info=True))
 def connect_db():
 	return sqlite3.connect(app.database)
 

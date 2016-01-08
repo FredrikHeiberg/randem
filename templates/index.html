@@ -2,32 +2,28 @@
 {% block content %}
 
 
-<div class="container">
 
-  <div class="starter-template" id="searchField">
+
+<div class="starter-template" id="searchField">
+  <h1>Søk etter prosjekt med dato</h1>
+  <div id="searchDiv">
+  <div class="col-md-6">
+    <br>
     <form action='/results' method="GET" class="form-search" id="searchForm">
-      <h1>Søk etter prosjekt med dato</h1>
-      <div class="row">
-        <br><br>
-        <div class="input-group">
-          <input type="text" class="form-control" id="searchCondition" name="date" placeholder="DD.MM.YY" value="{{ request.form.date }}">
-          <span class="input-group-btn">
-            <button id="searchButton" class="btn btn-default"
-            type="submit">Søk</button>
-          </span>
-        </div><!-- /input-group -->
-
-
-
-        <!-- {% for post in posts %}
-          <strong>Title:</strong> {{ post.title }}<br>
-          <strong>Post:</strong> {{ post.description }}<br>
-        {% endfor %} -->
-
-
-      </div><!-- /.row -->
+      <input type="text" class="form-control" id="searchCondition" name="date" placeholder="Fra: DD.MM.YYYY" required value="{{ request.form.date }}" pattern="\d{2}.\d{2}.\d{4}">
+      <br> 
+      <input type="text" class="form-control" id="searchCondition" name="date2" placeholder="Til: DD.MM.YYYY" value="{{ request.form.date2 }}" pattern="\d{2}.\d{2}.\d{4}"><br>
+      <input class="btn btn-primary btn-file" id="searchButton" type="submit" value=Søk>
     </div>
   </form>
-</div><!-- /.container -->
 
-{% endblock %}
+  <div class="col-md-6">
+    <br>
+    <p class="text-left"><strong>INFO: </strong>Søk på oppdrag i periode:
+      Fra dato skrives inn i det første feltet, og Til dato skrives inn i det andre feltet. Begge må være på formatet DD.MM.YYYY (eks. 26.03.1991).
+      Ved liste over kun en dag, fyll kun inn det første feltet. 
+    </div>
+  </div>
+  </div>
+
+  {% endblock %}

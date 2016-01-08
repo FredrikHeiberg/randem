@@ -1,0 +1,45 @@
+{% extends "template.html" %}
+{% block content %}
+
+
+
+
+<div class="starter-template" id="searchField">
+	<h1>Opprett dokument</h1>
+	<div id="searchDiv">
+		<div class="col-md-6" id="inputFieldsCreate">
+			<br>
+			<form action='/createFile' method="POST" class="form-create" id="createForm">
+				<input name="_csrf_token" type="hidden" value="{{ csrf_token() }}"> <!-- CSRF_TOKEN in text field -->
+				<input type="text" class="form-control" id="documentName" name="dName" required placeholder="Dokument Navn">
+				<br> 
+				<input type="text" class="form-control" id="oNr" name="oNr" placeholder="Ordrenr" value="{{ request.form.oNr }}"><br>
+				<input type="text" class="form-control" id="customerOrGroup" name="group" placeholder="Kunde/grp" value="{{ request.form.group }}"><br>
+				<input type="text" class="form-control" id="dateOfOrder" name="dOfOrder" placeholder="Dato DD.MM.YYYY" value="{{ request.form.dOfOrder }}" required pattern="\d{2}.\d{2}.\d{4}"><br>
+				<input type="text" class="form-control" id="time" name="time" placeholder="Avreisetid HH.MM" value="{{ request.form.time }}" pattern="\d{2}.\d{2}"><br>
+				<input type="text" class="form-control" id="depPlace" name="depPlace" placeholder="Fremmøte sted" value="{{ request.form.depPlace }}"><br>
+				<input type="text" class="form-control" id="nPeople" name="nPeople" placeholder="Antall pers" value="{{ request.form.nPeople }}"><br>
+				<textarea type="text" class="form-control" id="assignment" name="assignment" placeholder="Oppdrag" value="{{ request.form.assignment }}"></textarea><br>
+				<textarea type="text" class="form-control" id="extraInfo" name="eInfo">Bussen skal mote 15 minutter for avreisetid. </textarea><br>
+				<input type="text" class="form-control" id="performedBy" name="pBy" placeholder="Utføres av" value="{{ request.form.pBy }}"><br>
+				<input type="text" class="form-control" id="mobileNr" name="mobileNr" placeholder="Mobil" value="{{ request.form.date2 }}"><br>
+				<input type="text" class="form-control" id="price" name="price" placeholder="Pris" value="{{ request.form.date2 }}" ><br>
+				<input class="btn btn-primary btn-file" id="createButton" type="submit" value=Opprett>
+			</div>
+			<br>
+		</form>
+
+		<div class="col-md-6">
+
+			<p class="text-left"><strong>INFO: </strong>Opprett et nytt dokument ved å fylle inn feltene. </p><p class="text-left"><strong>Obs:</strong> Dersom dokumentet har sammen navn som et tidligere dokumen, vil det gamle dokumentet bli overskrevet.</p><p class="text-left"> <strong>Husk! </strong>fyll inn dato på formatet DD.MM.YYY, og tidspunkt på formatet HH.MM.
+			</div>
+		</div>
+	</div>
+
+	{% endblock %}
+
+
+
+
+
+

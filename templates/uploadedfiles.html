@@ -2,31 +2,34 @@
 {% block content %}
 
 {% if listOfFiles > 0 %}
-  <div class="container">
-    <div class="starter-template">
-    	    <form action='/uploadedfiles' method="POST" class="form-delete" id="deleteForm">
-      <div id="sheets">
-        <table id="table1" class="table">
-          <thread>
-          <tr>
-            <th>Filnavn</th>
-              <tbody>
-              {% for file in listOfFiles %}
-                  <tr><td class="text-left"> {{ file }} <input type="checkbox" id="box" name="{{ file }}" value="Bike"><br> </td> </tr>
-              {% endfor %}
-            </tr></tbody>
-          </thread>
-        </table>
-      </div>
-          <button type="submit" class="btn btn-danger" id="deleteButton" method="post">Slett markerte</button>
-              <form action='/results' method="GET" class="form-search" id="searchForm">
-    </div>
-    {% else %}
-    <div class="starter-template">
-    <h1>Ingen filer i mappen</h1>
-  </div>
-</div>
-    {% endif %}
+<div class="container">
+	<div class="starter-template">
+		<form action='/uploadedfiles' method="POST" class="form-delete" id="deleteForm">
+			<input name="_csrf_token" type="hidden" value="{{ csrf_token() }}"> <!-- CSRF_TOKEN in text field -->
+			<div id="sheets">
+				<table id="table1" class="table">
+					<thread>
+						<tr>
+							<th>Filnavn</th>
+							<th>Last ned</th>
+						</tr>
+							<tbody>
+								{% for file in listOfFiles %}
+								<tr><td class="text-left"> {{ file }}</td><td><a href="/download" id="download" name="{{ file }}" method="POST">Last ned</a><input type="checkbox" id="box" name="{{ file }}" ><br> </tr>
+								{% endfor %}
+							</tr></tbody>
+						</thread>
+					</table>
+				</div>
+				<button type="submit" class="btn btn-danger" id="deleteButton" method="post">Slett markerte</button>
+				<form action='/results' method="GET" class="form-search" id="searchForm">
+				</div>
+				{% else %}
+				<div class="starter-template">
+					<h1>Ingen filer i mappen</h1>
+				</div>
+			</div>
+			{% endif %}
 
 
-{% endblock %}
+			{% endblock %}
