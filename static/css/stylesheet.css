@@ -44,6 +44,10 @@ body {
 	float: left;
 }
 
+#edit {
+	float: left;
+}
+
 #box {
 	float:right;
 }

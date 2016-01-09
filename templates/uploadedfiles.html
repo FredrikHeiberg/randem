@@ -11,11 +11,12 @@
 					<thread>
 						<tr>
 							<th>Filnavn</th>
+							<th>Endre fil</th>
 							<th>Last ned</th>
 						</tr>
 							<tbody>
 								{% for file in listOfFiles %}
-								<tr><td class="text-left"> {{ file }}</td><td><a href="/download" id="download" name="{{ file }}" method="POST">Last ned</a><input type="checkbox" id="box" name="{{ file }}" ><br> </tr>
+								<tr><td class="text-left"> {{ file }}</td><td><a href="{{ url_for('edit', file=file) }}" id="edit">Endre</a></td><td><a href="{{ url_for('download', file=file) }}" id="download" name="{{ file }}" method="POST">Last ned</a><input type="checkbox" id="box" name="{{ file }}" ><br> </tr>
 								{% endfor %}
 							</tr></tbody>
 						</thread>
@@ -33,3 +34,7 @@
 
 
 			{% endblock %}
+
+
+
+			<a href="{{ url_for('downloadFunc', file=file_name) }}">{{ file_name }}</a>

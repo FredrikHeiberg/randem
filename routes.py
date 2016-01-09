@@ -130,18 +130,44 @@ def upload_file():
 			return redirect(url_for('index'))
 	return render_template('upload_file.html')
 
-@app.route('/download', methods=['GET', 'POST'])
+@app.route('/download/<file>', methods=['GET', 'POST'])
 @login_required
-def download():
+def download(file):
 	listOfFiles = []
 	listOfFiles = getListOfSheets()
 
 	if request.method == 'GET':
-		fileNamePath = UPLOAD_FOLDER+"/TEST.xls"
-
+		fileNamePath = UPLOAD_FOLDER+"/"+file
 		return download_item(fileNamePath)
 
-	return redirect(url_for('uploadedfiles'))
+	return redirect(url_for('uploadedfiles'), file=file)
+
+# Get the file name of pressed link
+@app.route('/edit/<file>', methods=['GET', 'POST'])
+@login_required
+def edit(file):
+	print "FILE!!! %s" %file
+	listOfFiles = []
+	listOfFiles = getListOfSheets()
+
+	fileNamePath = UPLOAD_FOLDER+"/"+file
+	infoList = editDocument(fileNamePath)
+	infoList.append(file)
+#	print infoList
+	#return editDocument(fileNamePath)
+
+#	if request.method == 'POST':
+#		print "!!!!!!!!!!!!!!!!!!!!!!!!!"
+#		# Kun kjøre create file her, med filnavn lik tidligere? Og lagre verdiene som er i textfeltene
+#		return redirect(url_for('uploadedfiles'))
+	editView(infoList)	
+	return render_template('edit.html', file=file, infoList=infoList)
+
+@app.route('/edit', methods=['GET', 'POST'])
+def editView(infoList):
+	infoList = infoList
+	print "TTTTTTTTTEEEEEEESSSSSTTTT"
+	return render_template('edit.html', infoList=infoList)
 
 ### TODO: ERROR OM FEIL FORMAT I SØKEFELT!!
 @app.route('/login', methods=['GET', 'POST'])
@@ -353,7 +379,10 @@ def delete_item(item_id):
     os.remove(str(UPLOAD_FOLDER)+"/%s" %item_id)
 
 def download_item(item_id):
-	return send_from_directory(UPLOAD_FOLDER, "TEST.xls")
+	item_id = item_id
+	getItemName = item_id.split("/")
+	fileId = getItemName[-1]
+	return send_from_directory(UPLOAD_FOLDER, fileId)
 
 def createDocument():
 	global infoList
@@ -375,6 +404,39 @@ def createDocument():
 	# Set the name of the file
 	outBook.save(UPLOAD_FOLDER+"/%s"%infoList[len(infoList)-1]+".xls")
 	#outBook.ExportAsFixedFormat(0, UPLOAD_FOLDER+"/%s"%infoList[len(infoList)-1]+".pdf")
+
+def editDocument(path):
+	path = path
+	fileInfo = []
+	## OPEN workbook and from path, and store information in a list that is returned
+	workbook = xlrd.open_workbook(path, formatting_info=True, on_demand=True)
+	inSheet = workbook.sheet_by_index(0)
+
+	orderNumber = getCellInfo(1,1,inSheet)
+	customerGrp = getCellInfo(2,1,inSheet)
+	dateDate = getCellInfo(3,1,inSheet)
+	departmentTime = getCellInfo(4,1,inSheet)
+	meetingPlace = getCellInfo(5,1,inSheet)
+	numPers = getCellInfo(6,1,inSheet)
+	assignment = getCellInfo(7,1,inSheet)
+	otherInfo = getCellInfo(8,1,inSheet)
+	executeBy = getCellInfo(9,1,inSheet)
+	mobileNumber = getCellInfo(10,1,inSheet)
+	price = getCellInfo(11,1,inSheet)
+
+	fileInfo.append(orderNumber)
+	fileInfo.append(customerGrp)
+	fileInfo.append(dateDate)
+	fileInfo.append(departmentTime)
+	fileInfo.append(meetingPlace)
+	fileInfo.append(numPers)
+	fileInfo.append(assignment)
+	fileInfo.append(otherInfo)
+	fileInfo.append(executeBy)
+	fileInfo.append(mobileNumber)
+	fileInfo.append(price)
+
+	return fileInfo
 
 # Copy formating of excel sheet
 def copy2(wb):

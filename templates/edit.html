@@ -1,0 +1,43 @@
+{% extends "template.html" %}
+{% block content %}
+
+
+<div class="starter-template" id="searchField">
+	<h1>Endre fil</h1>
+	<div id="searchDiv">
+		<div class="col-md-6" id="inputFieldsCreate">
+			<br>
+			<form method="POST" class="form-edit" id="editForm">
+				<input name="_csrf_token" type="hidden" value="{{ csrf_token() }}"> <!-- CSRF_TOKEN in text field -->
+				<label id="documentName" name="dName">{{ infoList[11]}}</label><br>
+				<br> 
+				<input type="text" class="form-control" id="oNr" name="oNr" value="{{ infoList[0] }}"><br>
+				<input type="text" class="form-control" id="customerOrGroup" name="group" value="{{ infoList[1] }}"><br>
+				<input type="text" class="form-control" id="dateOfOrder" name="dOfOrder" value="{{ infoList[2] }}" required pattern="\d{2}.\d{2}.\d{4}"><br>
+				<input type="text" class="form-control" id="time" name="time" value="{{ infoList[3] }}" pattern="\d{2}.\d{2}"><br>
+				<input type="text" class="form-control" id="depPlace" name="depPlace" value="{{ infoList[4] }}"><br>
+				<input type="text" class="form-control" id="nPeople" name="nPeople" value="{{ infoList[5] }}"><br>
+				<textarea type="text" class="form-control" id="assignment" name="assignment">{{ infoList[6]}}</textarea><br>
+				<textarea type="text" class="form-control" id="extraInfo" name="eInfo">{{ infoList[7]}} </textarea><br>
+				<input type="text" class="form-control" id="performedBy" name="pBy" value="{{ infoList[8] }}"><br>
+				<input type="text" class="form-control" id="mobileNr" name="mobileNr" value="{{ infoList[9] }}"><br>
+				<input type="text" class="form-control" id="price" name="price" value="{{ infoList[10] }}" ><br>
+				<input class="btn btn-primary btn-file" method="POST" id="editButton" type="submit" value=Lagre>
+			</div>
+			<br>
+		</form>
+
+		<div class="col-md-6">
+
+			<p class="text-left"><strong>INFO: </strong>Endre dokument ved å endre feltene. </p><p class="text-left"> <strong>Husk! </strong>fyll inn dato på formatet DD.MM.YYY, og tidspunkt på formatet HH.MM.
+			</div>
+		</div>
+	</div>
+
+	{% endblock %}
+
+
+
+
+
+
