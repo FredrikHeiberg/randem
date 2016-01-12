@@ -5,7 +5,7 @@ from flask.ext.uploads import UploadSet, configure_uploads, DOCUMENTS
 from xlrd import *
 from xlutils.copy import copy
 from werkzeug import secure_filename
-from utils import UPLOAD_FOLDER
+from utils import UPLOAD_FOLDER, TEMPLATE_FOLDER
 from flask_wtf.csrf import CsrfProtect
 from flask.ext.sqlalchemy import SQLAlchemy
 from datetime import date, timedelta as td
@@ -30,6 +30,7 @@ infoList = []
 ALLOWED_EXTENSIONS = set(['xlsx','xls'])
 CsrfProtect(app)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+app.config['TEMPLATE_FOLDER'] = TEMPLATE_FOLDER
 #excelFiles = UploadSet('excelf', DOCUMENTS)
 
 #app.config['UPLOADED_FILES_DEST'] = '/sheets'
@@ -142,7 +143,6 @@ def download(file):
 
 	return redirect(url_for('uploadedfiles'), file=file)
 
-# Get the file name of pressed link
 @app.route('/edit/<file>', methods=['GET', 'POST'])
 @login_required
 def edit(file):
@@ -153,21 +153,14 @@ def edit(file):
 	fileNamePath = UPLOAD_FOLDER+"/"+file
 	infoList = editDocument(fileNamePath)
 	infoList.append(file)
-#	print infoList
+	print infoList
 	#return editDocument(fileNamePath)
 
-#	if request.method == 'POST':
-#		print "!!!!!!!!!!!!!!!!!!!!!!!!!"
-#		# Kun kjøre create file her, med filnavn lik tidligere? Og lagre verdiene som er i textfeltene
-#		return redirect(url_for('uploadedfiles'))
-	editView(infoList)	
+	if request.method == 'POST':
+		# Kun kjøre create file her, med filnavn lik tidligere? Og lagre verdiene som er i textfeltene
+		return redirect(url_for('uploadedfiles'))
+	
 	return render_template('edit.html', file=file, infoList=infoList)
-
-@app.route('/edit', methods=['GET', 'POST'])
-def editView(infoList):
-	infoList = infoList
-	print "TTTTTTTTTEEEEEEESSSSSTTTT"
-	return render_template('edit.html', infoList=infoList)
 
 ### TODO: ERROR OM FEIL FORMAT I SØKEFELT!!
 @app.route('/login', methods=['GET', 'POST'])
@@ -199,7 +192,14 @@ def createFile():
 	infoList = []
 	if request.method == 'POST':
 		# Gather search field conditions and create a list of corresponding files
-		orderNumber = str(request.form['oNr'])
+
+		templateUrd = str(TEMPLATE_FOLDER)
+		staticUrl = templateUrd+"/"+"orderId.txt"
+		ordernNumberLocation = open(staticUrl, 'r')
+
+		tempOrderNumber = ordernNumberLocation.read()
+		orderNumber = tempOrderNumber
+		ordernNumberLocation.close()
 		customerGrp = str(request.form['group'])
 		dateDate = str(request.form['dOfOrder'])
 		departmentTime = str(request.form['time'])
@@ -210,7 +210,7 @@ def createFile():
 		executeBy = str(request.form['pBy'])
 		mobileNumber = str(request.form['mobileNr'])
 		price = str(request.form['price'])
-		sheetName = str(request.form['dName'])
+		sheetName = str(customerGrp+"-"+orderNumber)
 
 		infoList.append(orderNumber)
 		infoList.append(customerGrp)
@@ -226,6 +226,20 @@ def createFile():
 		infoList.append(sheetName)
 
 		createDocument()
+
+		# Add document to log
+		logFileDir = templateUrd+"/"+"orderLog.txt"
+		logFile = open(logFileDir, 'a')
+		logFile.write("Fil navn: \t\t%s.xls \n \tOrder nummer: \t%s\n \tKunde: \t\t%s \n\tDato: \t\t%s\n" %(sheetName, orderNumber, customerGrp, dateDate))
+		logFile.close()
+
+		# Update order id number
+		numberIdValue = int(tempOrderNumber)
+		newIdNumber = numberIdValue + 1
+
+		updateId = open(staticUrl, 'w')
+		updateId.write(str(newIdNumber))
+		updateId.close()
 		return render_template('index.html')
 
 	return render_template('createFile.html', error=error)
@@ -386,10 +400,10 @@ def download_item(item_id):
 
 def createDocument():
 	global infoList
-	searchCondition = "newTemplateTest.xls"
+	searchCondition = "template.xls"
 
 	#workbook = copy(open_workbook(UPLOAD_FOLDER+"/%s"%searchCondition, formatting_info=True, on_demand=True))
-	workbook = xlrd.open_workbook(UPLOAD_FOLDER+"/%s"%searchCondition, formatting_info=True, on_demand=True)
+	workbook = xlrd.open_workbook(TEMPLATE_FOLDER+"/%s"%searchCondition, formatting_info=True, on_demand=True)
 	inSheet = workbook.sheet_by_index(0)
 	outBook, outStyle = copy2(workbook)
 	#workbook.save(UPLOAD_FOLDER+"/testMal"+".xls")

@@ -1,0 +1,17 @@
+Fil navn: 		MUNCHS-1001 
+ 	Order nummer: 	1001
+ 	Kunde: 		MUNCHS 
+Fil navn: 		Steria-1002 
+ 	Order nummer: 	1002
+ 	Kunde: 		Steria 
+Fil navn: 		Steria-1003.xls 
+ 	Order nummer: 	1003
+ 	Kunde: 		Steria 
+Fil navn: 		Steria-1004.xls 
+ 	Order nummer: 	1004
+ 	Kunde: 		Steria 
+	Dato: 16.01.2016
+Fil navn: 		Steria-1005.xls 
+ 	Order nummer: 	1005
+ 	Kunde: 		Steria 
+	Dato: 		16.01.2016
