@@ -200,17 +200,19 @@ def createFile():
 		tempOrderNumber = ordernNumberLocation.read()
 		orderNumber = tempOrderNumber
 		ordernNumberLocation.close()
-		customerGrp = str(request.form['group'])
+		#print (str(request.form['group']))
+		customerGrp = request.form['group']
+		print (customerGrp)
 		dateDate = str(request.form['dOfOrder'])
 		departmentTime = str(request.form['time'])
-		meetingPlace = str(request.form['depPlace'])
+		meetingPlace = request.form['depPlace']
 		numPers = str(request.form['nPeople'])
-		assignment = str(request.form['assignment'])
-		otherInfo = str(request.form['eInfo'])
-		executeBy = str(request.form['pBy'])
+		assignment = request.form['assignment']
+		otherInfo = request.form['eInfo']
+		executeBy = request.form['pBy']
 		mobileNumber = str(request.form['mobileNr'])
 		price = str(request.form['price'])
-		sheetName = str(customerGrp+"-"+orderNumber)
+		sheetName = customerGrp+"-"+orderNumber
 
 		infoList.append(orderNumber)
 		infoList.append(customerGrp)
@@ -230,7 +232,7 @@ def createFile():
 		# Add document to log
 		logFileDir = templateUrd+"/"+"orderLog.txt"
 		logFile = open(logFileDir, 'a')
-		logFile.write("Fil navn: \t\t%s.xls \n \tOrder nummer: \t%s\n \tKunde: \t\t%s \n\tDato: \t\t%s\n" %(sheetName, orderNumber, customerGrp, dateDate))
+		#logFile.write("Fil navn: \t\t%s.xls \n \tOrder nummer: \t%s\n \tKunde: \t\t%s \n\tDato: \t\t%s\n" %(sheetName, orderNumber, customerGrp, dateDate))
 		logFile.close()
 
 		# Update order id number
@@ -374,7 +376,11 @@ def allowed_file(filename):
 
 def getListOfSheets():
 	global formatedList;
-	formatedList = os.listdir(str(UPLOAD_FOLDER))
+	newFormatedList = []
+	formatedList = os.listdir(UPLOAD_FOLDER)
+	for string in formatedList:
+		newFormatedList.append(string.decode('utf-8'))
+	formatedList = newFormatedList
 	listOfUploadedFiles = []
 	for element in formatedList:
 		#tempString = element.split("/")
