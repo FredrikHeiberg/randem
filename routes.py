@@ -4,6 +4,7 @@ from functools import wraps
 from flask.ext.uploads import UploadSet, configure_uploads, DOCUMENTS
 from xlrd import *
 from xlutils.copy import copy
+from form import LoginForm
 from werkzeug import secure_filename
 from utils import UPLOAD_FOLDER, TEMPLATE_FOLDER
 from flask_wtf.csrf import CsrfProtect
@@ -12,6 +13,7 @@ from flask.ext.bcrypt import Bcrypt
 from datetime import date, timedelta as td
 import os, glob, xlrd, datetime, re
 from xlutils.filter import process,XLRDReader,XLWTWriter
+from models import *
 #import sqlite3
 
 #
@@ -222,19 +224,25 @@ def edit(file):
 	return render_template('edit.html', file=file, infoList=infoList)
 
 
-### TODO: ERROR OM FEIL FORMAT I SØKEFELT!!
+### FIND A WAY TO REFACTOR SO THAT THIS WILL WORK -- REFERENCE BETWEEN EACHOTHER
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 	error = None
 
+	form = LoginForm(request.form)
+
 	if request.method == 'POST':
-		if request.form['username'] != 'admin' or request.form['password'] != 'admin':
-			error = 'Feil brukernavn/passord'
-		else:
-			session['logged_in'] = True
-			flash('Du er naa logget inn!')
-			return redirect(url_for('index'))
-	return render_template('login.html', error=error)
+		if form.validate_on_submit():
+			user = User.query.filter_by(name=request.form['username']).first()
+			if user is not None and bcrypt.check_password_hash(
+				user.password, request.form['password']):
+				session['logged_in'] = True
+				flash('Du er naa logget inn!')
+				return redirect(url_for('index'))
+			else:
+				print "Feil brukernavn/passord"
+				error = 'Feil brukernavn/passord'
+	return render_template('login.html', form=form, error=error)
 
 @app.route('/logout')
 @login_required
@@ -247,7 +255,6 @@ def logout():
 @login_required
 def createFile():
 	error = None
-
 	global infoList
 	infoList = []
 	if request.method == 'POST':

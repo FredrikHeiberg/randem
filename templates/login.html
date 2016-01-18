@@ -1,3 +1,4 @@
+
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -29,40 +30,39 @@
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
       <![endif]-->
     </head>
-
+    {% block content %}
     <body>
+      <div class="container" id="login">
+        <br>
+        <br>
+        <form class="form-signin" id="logForm" role="form" method="post" action="">
+          <input name="_csrf_token" type="hidden" value="{{ csrf_token() }}">
+          <h2 class="form-signin-heading">Logg inn:</h2>
+          <br>
+          {{ form.csrf_token }}
+          <p>
+            {{ form.username(placeholder="Brukernavn") }}
+            <span class="error">
+              {% if form.username.errors %}
+              {% for error in form.username.errors %}
+              {{ error }}
+              {% endfor %}
+              {% endif %}
+            </span>
+          </p>
+          <p>
+            {{ form.password(placeholder="Passord") }}
+            <span class="error">
+              {% if form.password.errors %}
+              {% for error in form.password.errors %}
+              {{ error }}
+              {% endfor %}
+              {% endif %}
+            </span>
+          </p>
+          <button class="btn btn-sm btn-success" type="submit">Sign in</button>
+        </form>
+      </div>
+      <body>
 
-    <div class="container" id="login">
-      <br>
-      <form action="" method="post" class="form-signin" id="logForm">
-
-        <input name="_csrf_token" type="hidden" value="{{ csrf_token() }}"> <!-- CSRF_TOKEN in text field -->
-
-        <h2 class="form-signin-heading">Logg inn:</h2>
-        <input type="text" class="form-control" placeholder="Brukernavn" name="username" value="{{
-          request.form.username }}"><br>
-         <input type="password" placeholder="Passord" class="form-control" name="password" value="{{
-          request.form.password }}"><br>
-        <input class="btn btn-success" type="submit" value="Login">
-        {% if error %}
-        <br><br> <!-- TODO: Add Boostrap design to error -->
-          <div class="alert alert-danger" role="alert">
-                    <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-            <a  class="alert-link"><strong>Error:</strong> {{ error }}</a>
-          </div>
-          <!-- <p class="error"><strong>Error:</strong> {{ error }} -->
-        {% endif %}
-      </form>
-    </div>
-
-
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <script>window.jQuery || document.write('<script src="js/vendor/jquery.min.js"><\/script>')</script>
-    <script src="js/bootstrap.min.js"></script>
-    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <script src="static/js/ie10-viewport-bug-workaround.js"></script>
-    <script src="static/js/script.js"></script>
-  </body>
+        {% endblock %}

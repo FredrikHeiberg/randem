@@ -1,4 +1,4 @@
-from routes import db
+from routes import db, bcrypt
 
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
@@ -32,7 +32,8 @@ class User(db.Model):
 	def __init__(self, name, email, password):
 		self.name = name
 		self.email = email
-		self.password = password
+		#self.password = password
+		self.password = bcrypt.generate_password_hash(password)
 
 	def __repr__(self):
 		return '<name {}'.format(self.name)
