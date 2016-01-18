@@ -17,7 +17,7 @@ from models import *
 #import sqlite3
 
 #
-#	NOTE TO SELF: Fix resten av database ++ + snakk med kabbe om session osv, convert excel to PDF?
+#	NOTE TO SELF: convert excel to PDF?
 #			HUSK: add log and id to .git ignore
 #
 #
