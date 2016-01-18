@@ -1,7 +1,7 @@
-from routes import db, bcrypt
 
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
+from routes import db, bcrypt
 
 class BlogPost(db.Model):
 
