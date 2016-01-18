@@ -26,7 +26,6 @@ bcrypt = Bcrypt(app)
 
 # config
 app.config.from_object(os.environ['APP_SETTINGS'])
-print os.environ['APP_SETTINGS']
 
 # Create the sqlalchemy object
 db = SQLAlchemy(app)
@@ -533,8 +532,7 @@ def copy2(wb):
 #	
 
 #w = copy(open_workbook('/Users/fredrikheiberg/Documents/randem/static/sheets/mal.xls',formatting_info=True))
-#def connect_db():
-#	return sqlite3.connect(app.database)
+
 
 if __name__ == '__main__':
 	app.run() 
