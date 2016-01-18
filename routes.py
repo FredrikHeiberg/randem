@@ -26,6 +26,7 @@ bcrypt = Bcrypt(app)
 
 # config
 app.config.from_object(os.environ['APP_SETTINGS'])
+print os.environ['APP_SETTINGS']
 
 # Create the sqlalchemy object
 db = SQLAlchemy(app)
