@@ -1,4 +1,4 @@
-from app import db
+from routes import db
 
 class BlogPost(db.Model):
 
@@ -14,3 +14,4 @@ class BlogPost(db.Model):
 
 	def __repr__(self):
 		return '<title {}'.format(self.title)
+

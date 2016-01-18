@@ -14,14 +14,19 @@ from xlutils.filter import process,XLRDReader,XLWTWriter
 #import sqlite3
 
 #
-#	NOTE TO SELF: evt aapne hver fil og soke paa dato i filen - slippe aa kalle filen noe spess
-#				  men trenger da soke gjennom alle filene
+#	NOTE TO SELF: Fix resten av database ++ + snakk med kabbe om session osv, convert excel to PDF?
+#			HUSK: add log and id to .git ignore
 #
 #
 
 app = Flask(__name__)
 
-app.secret_key = "p1sJ24AcT9"
+# config
+app.config.from_object(os.environ['APP_SETTINGS'])
+print os.environ['APP_SETTINGS']
+
+# Create the sqlalchemy object
+db = SQLAlchemy(app)
 
 formatedList = []
 listOfOrders = []
@@ -146,21 +151,71 @@ def download(file):
 @app.route('/edit/<file>', methods=['GET', 'POST'])
 @login_required
 def edit(file):
-	print "FILE!!! %s" %file
+	#print "FILE!!! %s" %file
 	listOfFiles = []
+	editList = []
 	listOfFiles = getListOfSheets()
 
 	fileNamePath = UPLOAD_FOLDER+"/"+file
 	infoList = editDocument(fileNamePath)
 	infoList.append(file)
-	print infoList
+	searchCondition = "template.xls"
+	#print infoList
 	#return editDocument(fileNamePath)
 
 	if request.method == 'POST':
-		# Kun kjøre create file her, med filnavn lik tidligere? Og lagre verdiene som er i textfeltene
+		print "FILE NAME: %s"%file
+		print "PATH: %s/%s"%(UPLOAD_FOLDER, file)
+		workbook = xlrd.open_workbook(TEMPLATE_FOLDER+"/%s"%searchCondition, formatting_info=True, on_demand=True)
+		inSheet = workbook.sheet_by_index(0)
+		outBook, outStyle = copy2(workbook)
+
+		print "ADD NEW INFO TO LIST"
+		orderNumber = infoList[0]
+		customerGrp = request.form['group']
+		dateDate = str(request.form['dOfOrder'])
+		departmentTime = str(request.form['time'])
+		meetingPlace = request.form['depPlace']
+		numPers = str(request.form['nPeople'])
+		assignment = request.form['assignment']
+		otherInfo = request.form['eInfo']
+		executeBy = request.form['pBy']
+		mobileNumber = str(request.form['mobileNr'])
+		price = str(request.form['price'])
+		sheetName = "%s-%s"%(customerGrp, orderNumber)
+
+		editList.append(orderNumber)
+		editList.append(customerGrp)
+		editList.append(dateDate)
+		editList.append(departmentTime)
+		editList.append(meetingPlace)
+		editList.append(numPers)
+		editList.append(assignment)
+		editList.append(otherInfo)
+		editList.append(executeBy)
+		editList.append(mobileNumber)
+		editList.append(price)
+		editList.append(sheetName)
+
+		# Looper through all elements except the last one (name of file)
+		for i in range(len(editList) - 1):
+			xf_index = inSheet.cell_xf_index(i+1, 1)
+			saved_style = outStyle[xf_index]
+			outBook.get_sheet(0).write(i+1,1,editList[i], saved_style)
+
+		# Set the name of the file
+		outBook.save(UPLOAD_FOLDER+"/%s.xls"%sheetName)
+
+		print "fileName: %s, %s"%(infoList[-1], editList[-1])
+		fullEditFileName = "%s.xls"%editList[-1]
+		# Delete the old file
+		if infoList[-1] != fullEditFileName:
+			os.remove(str(UPLOAD_FOLDER)+"/%s" %infoList[-1])
+
 		return redirect(url_for('uploadedfiles'))
 	
 	return render_template('edit.html', file=file, infoList=infoList)
+
 
 ### TODO: ERROR OM FEIL FORMAT I SØKEFELT!!
 @app.route('/login', methods=['GET', 'POST'])
@@ -202,7 +257,6 @@ def createFile():
 		ordernNumberLocation.close()
 		#print (str(request.form['group']))
 		customerGrp = request.form['group']
-		print (customerGrp)
 		dateDate = str(request.form['dOfOrder'])
 		departmentTime = str(request.form['time'])
 		meetingPlace = request.form['depPlace']
@@ -364,7 +418,7 @@ def loopDatesExcel(dateValue):
 #	return listOfOrders
 
 def getCellInfo(row,col,sheet):
-	print "ROW %s COL %s" %(row, col)
+	#print "ROW %s COL %s" %(row, col)
 	if sheet.cell_value(row,col) != "":
 		return sheet.cell_value(row,col)
 	else:
@@ -473,11 +527,11 @@ def copy2(wb):
 #	
 
 #w = copy(open_workbook('/Users/fredrikheiberg/Documents/randem/static/sheets/mal.xls',formatting_info=True))
-def connect_db():
-	return sqlite3.connect(app.database)
+#def connect_db():
+#	return sqlite3.connect(app.database)
 
 if __name__ == '__main__':
-	app.run(debug=True) 
+	app.run() 
 
 
 
