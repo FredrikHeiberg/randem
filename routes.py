@@ -8,6 +8,7 @@ from werkzeug import secure_filename
 from utils import UPLOAD_FOLDER, TEMPLATE_FOLDER
 from flask_wtf.csrf import CsrfProtect
 from flask.ext.sqlalchemy import SQLAlchemy
+from flask.ext.bcrypt import Bcrypt
 from datetime import date, timedelta as td
 import os, glob, xlrd, datetime, re
 from xlutils.filter import process,XLRDReader,XLWTWriter
@@ -19,14 +20,18 @@ from xlutils.filter import process,XLRDReader,XLWTWriter
 #
 #
 
+# create the application object
 app = Flask(__name__)
+bcrypt = Bcrypt(app)
 
 # config
 app.config.from_object(os.environ['APP_SETTINGS'])
-print os.environ['APP_SETTINGS']
 
 # Create the sqlalchemy object
 db = SQLAlchemy(app)
+
+# import Db from models
+#from models import BlogPost
 
 formatedList = []
 listOfOrders = []

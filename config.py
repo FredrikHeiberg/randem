@@ -6,8 +6,10 @@ import os
 class BaseConfig(object):
 	DEBUG = False
 	SECRET_KEY = os.urandom(24)
-	# Set correct URI here - see part 9  + part 10 around 11 min (export DATABASE_URL)
-	#SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URI']
+	BASE_DIR = os.path.abspath(os.path.dirname(__file__))
+	UPLOAD_FOLDER = os.path.join(BASE_DIR, 'static/sheets')
+	TEMPLATE_FOLDER = os.path.join(BASE_DIR, 'static/fileTemplates')
+	SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
 
 
 class DevelopmentConfig(BaseConfig):
@@ -15,3 +17,11 @@ class DevelopmentConfig(BaseConfig):
 
 class ProductionConfig(BaseConfig):
 	DEBUG = False
+
+# Update to search for database!
+# export DATABASE_URL="sqlite:///posts.db"
+
+# sett config settings
+# export APP_SETTIGS="config.DevelopmentConfig"
+
+
