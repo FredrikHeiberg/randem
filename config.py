@@ -5,7 +5,8 @@ import os
 # Default config
 class BaseConfig(object):
 	DEBUG = False
-	SECRET_KEY = os.urandom(24)
+	SECRET_KEY = "123678789871312"
+	#SECRET_KEY = os.urandom(24)
 	BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 	SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
 	print SQLALCHEMY_DATABASE_URI
