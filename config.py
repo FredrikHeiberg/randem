@@ -15,8 +15,7 @@ class DevelopmentConfig(BaseConfig):
 	DEBUG = True
 
 class ProductionConfig(BaseConfig):
-	# Set to False!
-	DEBUG = True
+	DEBUG = False
 
 # Update to search for database!
 # export DATABASE_URL="sqlite:///posts.db"
