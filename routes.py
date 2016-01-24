@@ -40,6 +40,26 @@ app.config['TEMPLATE_FOLDER'] = TEMPLATE_FOLDER
 #app.config['UPLOADED_FILES_DEST'] = '/sheets'
 #configure_uploads(app, excelFiles)
 
+import logging
+import sys
+
+# Defaults to stdout
+logging.basicConfig(level=logging.INFO)
+
+# get the logger for the current Python module
+log = logging.getLogger(__name__)
+
+try: 
+
+    log.info('Start reading database')
+    # do risky stuff
+
+except:
+
+    # http://docs.python.org/2/library/sys.html
+    _, ex, _ = sys.exc_info()
+    log.error(ex.message)
+
 def login_required(f):
 	@wraps(f)
 	def wrap(*args, **kwargs):
