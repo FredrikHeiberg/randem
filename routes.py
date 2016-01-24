@@ -18,7 +18,7 @@ from models import *
 
 #
 #	NOTE TO SELF: convert excel to PDF?
-#			HUSK: add log and id to .git ignore
+#			HUSK: add log and order id to .git ignore
 #
 #
 
@@ -542,7 +542,7 @@ def copy2(wb):
 
 
 if __name__ == '__main__':
-	app.run() 
+	app.run(debug=True) 
 
 
 
