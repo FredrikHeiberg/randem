@@ -6,14 +6,14 @@ from xlrd import *
 from xlutils.copy import copy
 from form import LoginForm
 from werkzeug import secure_filename
-from utils import UPLOAD_FOLDER, TEMPLATE_FOLDER
+from utils import UPLOAD_FOLDER, TEMPLATE_FOLDER, app, bcrypt
 from flask_wtf.csrf import CsrfProtect
-from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.bcrypt import Bcrypt
 from datetime import date, timedelta as td
 import os, glob, xlrd, datetime, re
 from xlutils.filter import process,XLRDReader,XLWTWriter
-from models import *
+from models import User
+from flask.ext.sqlalchemy import SQLAlchemy
 #import sqlite3
 
 #
@@ -22,15 +22,7 @@ from models import *
 #
 #
 
-# create the application object
-app = Flask(__name__)
-bcrypt = Bcrypt(app)
 
-# config
-app.config.from_object(os.environ['APP_SETTINGS'])
-
-# Create the sqlalchemy object
-db = SQLAlchemy(app)
 
 # import Db from models
 #from models import BlogPost
@@ -542,7 +534,7 @@ def copy2(wb):
 
 
 if __name__ == '__main__':
-	app.run(debug=True) 
+	app.run() 
 
 
 
