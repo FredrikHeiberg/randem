@@ -32,7 +32,7 @@ listOfOrders = []
 infoList = []
 
 ALLOWED_EXTENSIONS = set(['xlsx','xls'])
-CsrfProtect(app)
+#CsrfProtect(app)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['TEMPLATE_FOLDER'] = TEMPLATE_FOLDER
 #excelFiles = UploadSet('excelf', DOCUMENTS)
