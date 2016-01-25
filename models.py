@@ -1,6 +1,7 @@
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
-from utils import db
+#from utils import db
+from routes import db
 
 class BlogPost(db.Model):
 

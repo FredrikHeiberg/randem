@@ -6,13 +6,14 @@ from xlrd import *
 from xlutils.copy import copy
 from form import LoginForm
 from werkzeug import secure_filename
-from utils import UPLOAD_FOLDER, TEMPLATE_FOLDER, app, bcrypt
+from utils import UPLOAD_FOLDER, TEMPLATE_FOLDER #, app, bcrypt
 from flask_wtf.csrf import CsrfProtect
 from flask.ext.bcrypt import Bcrypt
 from datetime import date, timedelta as td
 import os, glob, xlrd, datetime, re
 from xlutils.filter import process,XLRDReader,XLWTWriter
-from models import User
+#from models import User
+from models import *
 from flask.ext.sqlalchemy import SQLAlchemy
 #import sqlite3
 
@@ -22,6 +23,15 @@ from flask.ext.sqlalchemy import SQLAlchemy
 #
 #
 
+# create the application object
+app = Flask(__name__)
+bcrypt = Bcrypt(app)
+
+# config
+app.config.from_object(os.environ['APP_SETTINGS'])
+
+# Create the sqlalchemy object
+db = SQLAlchemy(app)
 
 
 # import Db from models
@@ -386,12 +396,12 @@ def loopDatesExcel(dateValue):
 		workbook = xlrd.open_workbook(file_location)
 		sheet = workbook.sheet_by_index(0)
 
-		if re.match('\d{2}.\d{2}.\d{4}', getCellInfo(3,1,sheet)) is not None:
-			print "YEYEYEYEYEYEYE"
+		#if re.match('\d{2}.\d{2}.\d{4}', getCellInfo(3,1,sheet)) is not None:
+			#print "YEYEYEYEYEYEYE"
 
 		print "TEST CELL VALUE %s" %getCellInfo(3,1,sheet)
 		if getCellInfo(3,1,sheet) == searchCondition and re.match('\d{2}.\d{2}.\d{4}', getCellInfo(3,1,sheet)) is not None:
-			print "CONDITION MEET"
+			#print "CONDITION MEET"
 			# Dato, ank tid, sted, oppdrag, kunde, buss, mobil
 			# TODO! add functionality if field is not filled in!!!!!
 
