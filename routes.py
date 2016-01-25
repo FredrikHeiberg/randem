@@ -183,13 +183,13 @@ def edit(file):
 	#return editDocument(fileNamePath)
 
 	if request.method == 'POST':
-		print "FILE NAME: %s"%file
-		print "PATH: %s/%s"%(UPLOAD_FOLDER, file)
+		#print "FILE NAME: %s"%file
+		#print "PATH: %s/%s"%(UPLOAD_FOLDER, file)
 		workbook = xlrd.open_workbook(TEMPLATE_FOLDER+"/%s"%searchCondition, formatting_info=True, on_demand=True)
 		inSheet = workbook.sheet_by_index(0)
 		outBook, outStyle = copy2(workbook)
 
-		print "ADD NEW INFO TO LIST"
+		#print "ADD NEW INFO TO LIST"
 		orderNumber = infoList[0]
 		customerGrp = request.form['group']
 		dateDate = str(request.form['dOfOrder'])
@@ -225,7 +225,7 @@ def edit(file):
 		# Set the name of the file
 		outBook.save(UPLOAD_FOLDER+"/%s.xls"%sheetName)
 
-		print "fileName: %s, %s"%(infoList[-1], editList[-1])
+		#print "fileName: %s, %s"%(infoList[-1], editList[-1])
 		fullEditFileName = "%s.xls"%editList[-1]
 		# Delete the old file
 		if infoList[-1] != fullEditFileName:
@@ -252,7 +252,7 @@ def login():
 				flash('Du er naa logget inn!')
 				return redirect(url_for('index'))
 			else:
-				print "Feil brukernavn/passord"
+				#print "Feil brukernavn/passord"
 				error = 'Feil brukernavn/passord'
 	return render_template('login.html', form=form, error=error)
 
@@ -348,7 +348,7 @@ def getInfoFromExcel():
 
 		if re.match('\d{2}.\d{2}.\d{4}',searchConditionList[1]) is not None:
 			secondDate = datetime.datetime.strptime(searchConditionList[1].translate(None, '.'), '%d%m%Y').date()
-			print "S: %s" %secondDate
+			#print "S: %s" %secondDate
 		else:
 			secondDate = 0
 			loopDatesExcel(searchConditionList[0])
