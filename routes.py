@@ -22,7 +22,7 @@ import sys
 
 #
 #	NOTE TO SELF: convert excel to PDF?
-#			HUSK: add log and order id to .git ignore
+#			HUSK: add log and order id to .git ignore and add debug=False
 #
 #
 
