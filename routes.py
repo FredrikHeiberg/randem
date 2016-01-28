@@ -15,7 +15,7 @@ import os, glob, xlrd, datetime, re
 from xlutils.filter import process,XLRDReader,XLWTWriter
 #from models import User
 
-from models import *
+#from models import *
 from flask.ext.sqlalchemy import SQLAlchemy
 import json, requests, hashlib
 import logging
