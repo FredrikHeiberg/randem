@@ -1,4 +1,4 @@
-import os
+import os, requests, json
 from flask.ext.sqlalchemy import SQLAlchemy
 from flask import Flask
 from flask.ext.bcrypt import Bcrypt
@@ -16,3 +16,7 @@ app.config.from_object(os.environ['APP_SETTINGS'])
 
 # Create the sqlalchemy object
 db = SQLAlchemy(app)
+
+dburl = 'https://obp-randem.restdb.io/rest/brukere'
+headers = {'x-apikey': 'd94ff3edb06800d3d74035321bdd03fa2d423', 'Content-Type': 'application/json'}
+params = {'sort': 'title'}
