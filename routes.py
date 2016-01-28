@@ -7,7 +7,7 @@ from xlutils.copy import copy
 #from flask.ext.wtf import form
 #from form import LoginForm
 from werkzeug import secure_filename
-from utils import UPLOAD_FOLDER, TEMPLATE_FOLDER, app, headers, params, dburl #, bcrypt
+from utils import UPLOAD_FOLDER, TEMPLATE_FOLDER, BACKUP_FOLDER, app, headers, params, dburl #, bcrypt
 from flask_wtf.csrf import CsrfProtect
 #from flask.ext.bcrypt import Bcrypt
 from datetime import date, timedelta as td
@@ -245,6 +245,9 @@ def edit(file):
 		# Set the name of the file
 		outBook.save(UPLOAD_FOLDER+"/%s.xls"%sheetName)
 
+		# Save to backup
+		outBook.save(BACKUP_FOLDER+"/%s"%infoList[len(infoList)-1]+".xls")
+
 		#print "fileName: %s, %s"%(infoList[-1], editList[-1])
 		fullEditFileName = "%s.xls"%editList[-1]
 		# Delete the old file
@@ -280,19 +283,6 @@ def login():
 			flash('Du er naa logget inn!')
 			return redirect(url_for('index'))
 	return render_template('login.html', error=error)
-
-# @app.route('/login', methods=['GET', 'POST'])
-# def login():
-# 	error = None
-
-# 	if request.method == 'POST':
-# 		if request.form['username'] != 'admin' or request.form['password'] != 'admin':
-# 			error = 'Feil brukernavn/passord'
-# 		else:
-# 			session['logged_in'] = True
-# 			flash('Du er naa logget inn!')
-# 			return redirect(url_for('index'))
-# 	return render_template('login.html', error=error)
 
 ### FIND A WAY TO REFACTOR SO THAT THIS WILL WORK -- REFERENCE BETWEEN EACHOTHER
 # @app.route('/login', methods=['GET', 'POST'])
@@ -423,8 +413,6 @@ def getInfoFromExcel():
 		loopDatesExcel(searchConditionList[0])
 	return listOfOrders
 
-
-### TODO: Change to loop over date value in sheet - not file name (DONE?)
 def loopDatesExcel(dateValue):
 
 	global listOfOrders
@@ -447,7 +435,7 @@ def loopDatesExcel(dateValue):
 		#if re.match('\d{2}.\d{2}.\d{4}', getCellInfo(3,1,sheet)) is not None:
 			#print "YEYEYEYEYEYEYE"
 
-		print "TEST CELL VALUE %s" %getCellInfo(3,1,sheet)
+		#print "TEST CELL VALUE %s" %getCellInfo(3,1,sheet)
 		if getCellInfo(3,1,sheet) == searchCondition and re.match('\d{2}.\d{2}.\d{4}', getCellInfo(3,1,sheet)) is not None:
 			#print "CONDITION MEET"
 			# Dato, ank tid, sted, oppdrag, kunde, buss, mobil
@@ -565,6 +553,9 @@ def createDocument():
 
 	# Set the name of the file
 	outBook.save(UPLOAD_FOLDER+"/%s"%infoList[len(infoList)-1]+".xls")
+
+	# Save to backup
+	outBook.save(BACKUP_FOLDER+"/%s"%infoList[len(infoList)-1]+".xls")
 	#outBook.ExportAsFixedFormat(0, UPLOAD_FOLDER+"/%s"%infoList[len(infoList)-1]+".pdf")
 
 def editDocument(path):
@@ -616,8 +607,6 @@ def checkCredentials(inputUsername, inputPassword):
 		stringValues = '{},{}'.format(cred['username'], cred['password'])
 		tempList = stringValues.split(",")
 		listOfCredentials.append(tempList)
-
-	print listOfCredentials
 
 	for pair in listOfCredentials:
 		if (inputUsername == pair[0] and inputPassword == pair[1]):
