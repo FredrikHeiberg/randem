@@ -4,6 +4,7 @@ from functools import wraps
 from flask.ext.uploads import UploadSet, configure_uploads, DOCUMENTS
 from xlrd import *
 from xlutils.copy import copy
+from flask.ext.wtf import form
 from form import LoginForm
 from werkzeug import secure_filename
 from utils import UPLOAD_FOLDER, TEMPLATE_FOLDER, app, bcrypt, headers, params, dburl
