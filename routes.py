@@ -264,35 +264,35 @@ def edit(file):
 # def login():
 # 	error = None
 
+if request.method == 'POST':
+
+	inputUsername = request.form['username']
+	inputPasswordPreHash = request.form['password']
+	hash_object = hashlib.sha256(inputPasswordPreHash) # put password here
+	inputPassword = hash_object.hexdigest()
+
+	validation = checkCredentials(inputUsername, inputPassword)
+
+	if validation != True:
+		error = 'Feil brukernavn/passord'
+	else:
+		session['logged_in'] = True
+		flash('Du er naa logget inn!')
+		return redirect(url_for('index'))
+	return render_template('login.html', error=error)
+
+# @app.route('/login', methods=['GET', 'POST'])
+# def login():
+# 	error = None
+
 # 	if request.method == 'POST':
-
-# 		inputUsername = request.form['username']
-# 		inputPasswordPreHash = request.form['password']
-# 		hash_object = hashlib.sha256(inputPasswordPreHash) # put password here
-# 		inputPassword = hash_object.hexdigest()
-
-# 		validation = checkCredentials(inputUsername, inputPassword)
-
-# 		if validation != True:
+# 		if request.form['username'] != 'admin' or request.form['password'] != 'admin':
 # 			error = 'Feil brukernavn/passord'
 # 		else:
 # 			session['logged_in'] = True
 # 			flash('Du er naa logget inn!')
 # 			return redirect(url_for('index'))
 # 	return render_template('login.html', error=error)
-
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-	error = None
-
-	if request.method == 'POST':
-		if request.form['username'] != 'admin' or request.form['password'] != 'admin':
-			error = 'Feil brukernavn/passord'
-		else:
-			session['logged_in'] = True
-			flash('Du er naa logget inn!')
-			return redirect(url_for('index'))
-	return render_template('login.html', error=error)
 
 ### FIND A WAY TO REFACTOR SO THAT THIS WILL WORK -- REFERENCE BETWEEN EACHOTHER
 # @app.route('/login', methods=['GET', 'POST'])
