@@ -48,9 +48,8 @@ import sys
 # import Db from models
 #from models import BlogPost
 
-CsrfProtect(app)
-
 ALLOWED_EXTENSIONS = set(['xlsx','xls'])
+CsrfProtect(app)
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 app.config['TEMPLATE_FOLDER'] = TEMPLATE_FOLDER
 #excelFiles = UploadSet('excelf', DOCUMENTS)
