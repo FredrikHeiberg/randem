@@ -9,7 +9,7 @@ from xlutils.copy import copy
 from werkzeug import secure_filename
 from utils import UPLOAD_FOLDER, TEMPLATE_FOLDER, app, bcrypt, headers, params, dburl
 from flask_wtf.csrf import CsrfProtect
-from flask.ext.bcrypt import Bcrypt
+#from flask.ext.bcrypt import Bcrypt
 from datetime import date, timedelta as td
 import os, glob, xlrd, datetime, re
 from xlutils.filter import process,XLRDReader,XLWTWriter
