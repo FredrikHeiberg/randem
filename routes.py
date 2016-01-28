@@ -1,5 +1,5 @@
 # coding=utf-8
-from flask import Flask, render_template, request, url_for, redirect, session, flash, g #, abort, send_from_directory
+from flask import Flask, render_template, request, url_for, redirect, session, flash, g, send_from_directory #, abort
 from functools import wraps
 from flask.ext.uploads import UploadSet, configure_uploads, DOCUMENTS
 #from xlrd import *
@@ -246,7 +246,7 @@ def edit(file):
 		outBook.save(UPLOAD_FOLDER+"/%s.xls"%sheetName)
 
 		# Save to backup
-		outBook.save(BACKUP_FOLDER+"/%s"%infoList[len(infoList)-1]+".xls")
+		outBook.save(BACKUP_FOLDER+"/%s"%infoList[len(infoList)-1])
 
 		#print "fileName: %s, %s"%(infoList[-1], editList[-1])
 		fullEditFileName = "%s.xls"%editList[-1]
