@@ -3,7 +3,7 @@ from flask import Flask, render_template, request, url_for, redirect, session, f
 from functools import wraps
 from flask.ext.uploads import UploadSet, configure_uploads, DOCUMENTS
 #from xlrd import *
-#from xlutils.copy import copy
+from xlutils.copy import copy
 #from flask.ext.wtf import form
 #from form import LoginForm
 from werkzeug import secure_filename
@@ -280,7 +280,7 @@ def edit(file):
 # 			flash('Du er naa logget inn!')
 # 			return redirect(url_for('index'))
 # 	return render_template('login.html', error=error)
-
+@csrf.exempt
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 	error = None
