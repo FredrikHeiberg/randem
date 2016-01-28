@@ -7,7 +7,7 @@ from xlutils.copy import copy
 #from flask.ext.wtf import form
 #from form import LoginForm
 from werkzeug import secure_filename
-from utils import UPLOAD_FOLDER, TEMPLATE_FOLDER, app, bcrypt, headers, params, dburl
+from utils import UPLOAD_FOLDER, TEMPLATE_FOLDER, app, headers, params, dburl #, bcrypt
 from flask_wtf.csrf import CsrfProtect
 #from flask.ext.bcrypt import Bcrypt
 from datetime import date, timedelta as td

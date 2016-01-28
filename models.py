@@ -1,7 +1,7 @@
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship
 #from routes import db, bcrypt
-from utils import db, bcrypt
+from utils import db #, bcrypt
 
 class BlogPost(db.Model):
 
@@ -33,7 +33,7 @@ class User(db.Model):
 		self.name = name
 		self.email = email
 		#self.password = password
-		self.password = bcrypt.generate_password_hash(password)
+		#self.password = bcrypt.generate_password_hash(password)
 
 	def __repr__(self):
 		return '<name {}'.format(self.name)
