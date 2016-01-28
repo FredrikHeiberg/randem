@@ -1,11 +1,11 @@
 # coding=utf-8
-from flask import Flask, render_template, request, url_for, redirect, session, flash, g, abort, send_from_directory
+from flask import Flask, render_template, request, url_for, redirect, session, flash, g #, abort, send_from_directory
 from functools import wraps
 from flask.ext.uploads import UploadSet, configure_uploads, DOCUMENTS
 from xlrd import *
 from xlutils.copy import copy
-from flask.ext.wtf import form
-from form import LoginForm
+#from flask.ext.wtf import form
+#from form import LoginForm
 from werkzeug import secure_filename
 from utils import UPLOAD_FOLDER, TEMPLATE_FOLDER, app, bcrypt, headers, params, dburl
 from flask_wtf.csrf import CsrfProtect
