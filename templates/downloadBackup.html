@@ -1,0 +1,16 @@
+{% extends "template.html" %}
+{% block content %}
+
+
+
+
+<div class="starter-template" id="searchField">
+  <h2>Last ned backup mappe</h2>
+  <br>
+  <form action="" method="post" class="form-download" id="downloadBackup">
+  	 <input name="_csrf_token" type="hidden" value="{{ csrf_token() }}"> <!-- CSRF_TOKEN in text field -->
+        <input class="btn btn-primary btn-file" id="downloadButton" type="submit" value="Last ned">
+    </form>
+  </div>
+
+  {% endblock %}

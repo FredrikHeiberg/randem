@@ -85,6 +85,8 @@ body {
 	height: 100px;
 }
 
-
+#downloadButton {
+	width: 7em;
+}
 
 

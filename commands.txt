@@ -18,3 +18,9 @@ heroku pg:psql
 Husk ; på slutten av statement!
 
 Ny bruker: INSERT INTO users VALUES(1, 'username', 'email', 'password');
+
+
+----- Heroku bash -----
+heroku run bash
+
+exit #For å komme ut igjen!

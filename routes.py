@@ -7,7 +7,7 @@ from xlutils.copy import copy
 #from flask.ext.wtf import form
 #from form import LoginForm
 from werkzeug import secure_filename
-from utils import UPLOAD_FOLDER, TEMPLATE_FOLDER, BACKUP_FOLDER, app, headers, params, dburl #, bcrypt
+from utils import UPLOAD_FOLDER, TEMPLATE_FOLDER, BACKUP_FOLDER, BASE_DIR, app, headers, params, dburl #, bcrypt
 from flask_wtf.csrf import CsrfProtect
 #from flask.ext.bcrypt import Bcrypt
 from datetime import date, timedelta as td
@@ -17,7 +17,7 @@ from xlutils.filter import process,XLRDReader,XLWTWriter
 
 #from models import *
 #from flask.ext.sqlalchemy import SQLAlchemy
-import json, requests, hashlib
+import json, requests, hashlib, zipfile
 import logging
 import sys
 #import sqlite3
@@ -181,11 +181,25 @@ def download(file):
 	listOfFiles = []
 	listOfFiles = getListOfSheets()
 
-	if request.method == 'GET':
+	if request.method == 'POST':
 		fileNamePath = UPLOAD_FOLDER+"/"+file
 		return download_item(fileNamePath)
 
 	return redirect(url_for('uploadedfiles'), file=file)
+
+
+#Download the backupfolder
+@app.route('/downloadBackup', methods=['GET', 'POST'])
+@login_required
+def downloadBackup():
+	if request.method == 'POST':
+		zipf = zipfile.ZipFile('Python.zip', 'w')
+		zipdir(BACKUP_FOLDER, zipf)
+	   	zipf.close()
+	   	return send_from_directory(BASE_DIR, 'Python.zip')
+	   	#return redirect(url_for('index'))
+	return render_template('downloadBackup.html')
+
 
 @app.route('/edit/<file>', methods=['GET', 'POST'])
 @login_required
@@ -598,6 +612,11 @@ def copy2(wb):
 		XLRDReader(wb,'unknown.xls'), w)
 	return w.output[0][1], w.style_list
 
+# Zip backupfolder
+def zipdir(path, ziph):
+    for root, dirs, files in os.walk(path):
+        for f in files:
+            ziph.write(os.path.join(root, f))
 
 def checkCredentials(inputUsername, inputPassword):
 	req = requests.get(dburl, params=params, headers=headers)
