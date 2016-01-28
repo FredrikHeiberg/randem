@@ -280,7 +280,7 @@ def edit(file):
 # 			flash('Du er naa logget inn!')
 # 			return redirect(url_for('index'))
 # 	return render_template('login.html', error=error)
-@csrf.exempt
+
 @app.route('/login', methods=['GET', 'POST'])
 def login():
 	error = None
