@@ -260,9 +260,9 @@ def edit(file):
 #----------------------------#
 # 			restdb.io    	 #
 #----------------------------#
-# @app.route('/login', methods=['GET', 'POST'])
-# def login():
-# 	error = None
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+	error = None
 
 	if request.method == 'POST':
 
