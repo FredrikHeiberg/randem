@@ -182,7 +182,7 @@ def download(file):
 	listOfFiles = getListOfSheets()
 	if request.method == 'GET':
 		fileNamePath = UPLOAD_FOLDER+"/"+file
-		#download_item_pdf(fileNamePath)
+		download_item_pdf(fileNamePath)
 		return download_item(fileNamePath)
 
 	return render_template('uploadedfiles.html', file=file, listOfFiles=listOfFiles)
@@ -545,9 +545,8 @@ def download_item(item_id):
 	fileId = getItemName[-1]
 	return send_from_directory(UPLOAD_FOLDER, fileId)
 
-# require server with openoffice
-#def download_item_pdf(item_id):
-#	call(["unoconv","-f","pdf",item_id])
+def download_item_pdf(item_id):
+	call(["unoconv","-f","pdf",item_id])
 
 
 
