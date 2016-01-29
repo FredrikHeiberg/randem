@@ -546,9 +546,7 @@ def download_item(item_id):
 	return send_from_directory(UPLOAD_FOLDER, fileId)
 
 def download_item_pdf(item_id):
-	commandString = "unoconv -f pdf %s" %item_id
-	print "Command string: %s" %commandString
-	call(commandString)
+	call(["unoconv","-f","pdf",item_id])
 
 
 
