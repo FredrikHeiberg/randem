@@ -1,6 +1,7 @@
 alembic==0.8.4
 bcrypt==2.0.0
 cffi==1.5.0
+Django==1.6.1
 et-xmlfile==1.0.1
 Flask==0.10.1
 Flask-Bcrypt==0.7.1
@@ -25,13 +26,17 @@ pbr==1.8.1
 psycopg2==2.6.1
 pycparser==2.14
 python-editor==0.5
+qt4reactor==1.6
 requests==2.9.1
 requests-futures==0.9.5
 six==1.10.0
 SQLAlchemy==1.0.11
+Twisted==15.5.0
+unoconv==0.6
 Werkzeug==0.11.3
 wheel==0.24.0
 WTForms==2.1
 xlrd==0.9.4
 xlutils==1.7.1
 xlwt==1.0.0
+zope.interface==4.1.3

@@ -14,7 +14,7 @@ from datetime import date, timedelta as td
 import os, glob, xlrd, datetime, re
 from xlutils.filter import process,XLRDReader,XLWTWriter
 #from models import User
-
+from subprocess import call
 #from models import *
 #from flask.ext.sqlalchemy import SQLAlchemy
 import json, requests, hashlib, zipfile
@@ -180,12 +180,12 @@ def upload_file():
 def download(file):
 	listOfFiles = []
 	listOfFiles = getListOfSheets()
-
-	if request.method == 'POST':
+	if request.method == 'GET':
 		fileNamePath = UPLOAD_FOLDER+"/"+file
+		download_item_pdf(fileNamePath)
 		return download_item(fileNamePath)
 
-	return redirect(url_for('uploadedfiles'), file=file)
+	return render_template('uploadedfiles.html', file=file, listOfFiles=listOfFiles)
 
 
 #Download the backupfolder
@@ -544,6 +544,12 @@ def download_item(item_id):
 	getItemName = item_id.split("/")
 	fileId = getItemName[-1]
 	return send_from_directory(UPLOAD_FOLDER, fileId)
+
+def download_item_pdf(item_id):
+	commandString = "unoconv -f pdf %s" %item_id
+	print "Command string: %s" %commandString
+	call(commandString)
+
 
 
 ##### create/edit sheet functions #####

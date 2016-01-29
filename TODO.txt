@@ -1,4 +1,4 @@
 TODO:
 
-- Sikker logg inn
-- Lage neste dato knapp
+- Session logout when window is crossed
+- gitignore folder! - backup og vanlig prosjekt folder!
