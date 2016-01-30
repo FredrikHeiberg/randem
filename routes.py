@@ -37,7 +37,7 @@ import sys
 #bcrypt = Bcrypt(app)
 
 # config
-#app.config.from_object(os.environ['APP_SETTINGS'])
+app.config.from_object(os.environ['APP_SETTINGS'])
 
 # Create the sqlalchemy object
 #db = SQLAlchemy(app)
@@ -182,7 +182,7 @@ def download(file):
 	listOfFiles = getListOfSheets()
 	if request.method == 'GET':
 		fileNamePath = UPLOAD_FOLDER+"/"+file
-		download_item_pdf(fileNamePath)
+		#download_item_pdf(fileNamePath)
 		return download_item(fileNamePath)
 
 	return render_template('uploadedfiles.html', file=file, listOfFiles=listOfFiles)
@@ -545,8 +545,8 @@ def download_item(item_id):
 	fileId = getItemName[-1]
 	return send_from_directory(UPLOAD_FOLDER, fileId)
 
-def download_item_pdf(item_id):
-	call(["unoconv","-f","pdf",item_id])
+#def download_item_pdf(item_id):
+#	call(["unoconv","-f","pdf",item_id])
 
 
 
@@ -625,17 +625,16 @@ def zipdir(path, ziph):
 def checkCredentials(inputUsername, inputPassword):
 	req = requests.get(dburl, params=params, headers=headers)
 	listOfCredentials = []
-
 	for cred in req.json():
 		stringValues = '{},{}'.format(cred['username'], cred['password'])
 		tempList = stringValues.split(",")
 		listOfCredentials.append(tempList)
 
+	valid = False
 	for pair in listOfCredentials:
 		if (inputUsername == pair[0] and inputPassword == pair[1]):
-			return True
-		else:
-			return False
+			valid = True
+	return valid
 
 #
 # Excel to PDF convert - use command line unoconv -f pdf your_excel.xls - read on this (will only work on the server)

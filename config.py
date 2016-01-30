@@ -9,7 +9,7 @@ class BaseConfig(object):
 	SECRET_KEY = 'm\xc0>c"\x89D\xa3HM\x8a+\xdc6\xd3\xff\x93\t\x86\x0b\xc8q\xe6&'
 	BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 	SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
-	print SQLALCHEMY_DATABASE_URI
+	#print SQLALCHEMY_DATABASE_URI
 
 
 class DevelopmentConfig(BaseConfig):
@@ -18,9 +18,9 @@ class DevelopmentConfig(BaseConfig):
 class ProductionConfig(BaseConfig):
 	DEBUG = False
 
+## HUSK! Kjor disse hver gang PC restart!! eller ny PC
 # Update to search for database!
 # export DATABASE_URL="sqlite:///posts.db"
-
 # sett config settings
 # export APP_SETTIGS="config.DevelopmentConfig"
 
