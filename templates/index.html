@@ -10,9 +10,26 @@
   <div class="col-md-6">
     <br>
     <form action='/results' method="GET" class="form-search" id="searchForm">
+
+        <div class='input-group date' id='datepicker'>
+          <input type='text' class="form-control" id="searchCondition" name="date" placeholder="Fra" value="{{ request.form.date }}" required pattern="\d{2}.\d{2}.\d{4}"/>
+          <span class="input-group-addon">
+            <span class="glyphicon glyphicon-calendar"></span>
+          </span>
+        </div><br>
+
+        <div class='input-group date' id='datepicker'>
+          <input type='text' class="form-control" id="searchCondition2" name="date2" placeholder="Til" value="{{ request.form.date2 }}"/>
+          <span class="input-group-addon">
+            <span class="glyphicon glyphicon-calendar"></span>
+          </span>
+        </div>
+        <br>
+
+<!--
       <input type="text" class="form-control" id="searchCondition" name="date" placeholder="Fra: DD.MM.YYYY" required value="{{ request.form.date }}" pattern="\d{2}.\d{2}.\d{4}">
       <br> 
-      <input type="text" class="form-control" id="searchCondition" name="date2" placeholder="Til: DD.MM.YYYY" value="{{ request.form.date2 }}" pattern="\d{2}.\d{2}.\d{4}"><br>
+      <input type="text" class="form-control" id="searchCondition" name="date2" placeholder="Til: DD.MM.YYYY" value="{{ request.form.date2 }}" pattern="\d{2}.\d{2}.\d{4}"><br> --> 
       <input class="btn btn-primary btn-file" id="searchButton" type="submit" value=Søk>
     </div>
   </form>

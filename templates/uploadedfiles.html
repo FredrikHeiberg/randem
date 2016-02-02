@@ -6,6 +6,10 @@
 	<div class="starter-template">
 		<form action='/uploadedfiles' method="POST" class="form-delete" id="deleteForm">
 			<input name="_csrf_token" type="hidden" value="{{ csrf_token() }}"> <!-- CSRF_TOKEN in text field -->
+			<div class="col-md-6" id="searchSizer">
+			<input type="text" class="form-control" id="searchBox" placeholder="Søk på gruppe navn eller ordre nr."><br>
+		</div>
+		
 			<div id="sheets">
 				<table id="table1" class="table">
 					<thread>

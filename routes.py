@@ -410,6 +410,7 @@ def getInfoFromExcel():
 	searchConditionTwo = str(request.args.get('date2'))
 	searchConditionList.append(searchConditionTwo)
 
+	# Endre til / i stede for . hvis dato endres
 	if (len(searchConditionList) == 2):
 		# if statement does not work (both of them!)
 		if re.match('\d{2}.\d{2}.\d{4}',searchConditionList[0]) is not None:

@@ -1,4 +1,6 @@
 TODO:
 
 - Session logout when window is crossed
+- Sikrere API kall
 - gitignore folder! - backup og vanlig prosjekt folder!
+- Har ikke satt upload document til backup

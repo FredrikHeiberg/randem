@@ -12,8 +12,19 @@
 				<label id="documentName" name="dName">{{ infoList[11]}}</label><br>
 				<br> 
 				<input type="text" class="form-control" id="customerOrGroup" name="group" value="{{ infoList[1] }}"><br>
-				<input type="text" class="form-control" id="dateOfOrder" name="dOfOrder" value="{{ infoList[2] }}" required pattern="\d{2}.\d{2}.\d{4}"><br>
-				<input type="text" class="form-control" id="time" name="time" value="{{ infoList[3] }}" pattern="\d{2}.\d{2}"><br>
+				<!-- <input type="text" class="form-control" id="dateOfOrder" name="dOfOrder" value="{{ infoList[2] }}" required pattern="\d{2}.\d{2}.\d{4}"><br>
+				<input type="text" class="form-control" id="time" name="time" value="{{ infoList[3] }}" pattern="\d{2}.\d{2}"><br> -->
+				<div class='input-group date' id='datepicker'>
+					<input type='text' class="form-control" id="dateOfOrder" name="dOfOrder" placeholder="Dato" value="{{ infoList[2] }}" required pattern="\d{2}.\d{2}.\d{4}"/>
+					<span class="input-group-addon">
+						<span class="glyphicon glyphicon-calendar"></span>
+					</span>
+				</div>
+				<br>				
+				<div class="input-group bootstrap-timepicker timepicker">
+					<input type="text" class="form-control" id="time" name="time" placeholder="Avreisetid HH.MM" value="{{ infoList[3] }}" pattern="\d{2}.\d{2}">					
+					<span class="input-group-addon"><i class="glyphicon glyphicon-time"></i></span>
+				</div> <br> 
 				<input type="text" class="form-control" id="depPlace" name="depPlace" value="{{ infoList[4] }}"><br>
 				<input type="text" class="form-control" id="nPeople" name="nPeople" value="{{ infoList[5] }}"><br>
 				<textarea type="text" class="form-control" id="assignment" name="assignment">{{ infoList[6]}}</textarea><br>
@@ -29,11 +40,11 @@
 		<div class="col-md-6">
 
 			<p class="text-left"><strong>INFO: </strong>Endre dokument ved å endre feltene. </p><p class="text-left"> <strong>Husk! </strong>fyll inn dato på formatet DD.MM.YYY, og tidspunkt på formatet HH.MM.
-			</div>
 		</div>
 	</div>
+</div>
 
-	{% endblock %}
+{% endblock %}
 
 
 
