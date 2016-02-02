@@ -268,11 +268,15 @@ def edit(file):
 		if infoList[-1] != fullEditFileName:
 			os.remove(str(UPLOAD_FOLDER)+"/%s" %infoList[-1])
 
-		return redirect(url_for('uploadedfiles'))
+		return redirect(url_for('edited'))
+		#return redirect(url_for('uploadedfiles'))
 	
 	return render_template('edit.html', file=file, infoList=infoList)
 
-
+@app.route('/edited')
+@login_required
+def edited():
+	return render_template('editSuccess.html')
 
 #----------------------------#
 # 			restdb.io    	 #
@@ -382,9 +386,15 @@ def createFile():
 		updateId = open(staticUrl, 'w')
 		updateId.write(str(newIdNumber))
 		updateId.close()
-		return render_template('index.html')
+		#return redirect(url_for('createSuccess'))
+		return render_template('createdConfirm.html', sheetName=sheetName)
 
 	return render_template('createFile.html', error=error)
+
+@app.route('/createSuccess')
+@login_required
+def createdConfirm():
+	return render_template('createdConfirm.html')
 
 def getInfoFromExcel():
 	global listOfOrders
