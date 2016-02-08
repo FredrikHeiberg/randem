@@ -89,6 +89,11 @@ formatedList = []
 listOfOrders = []
 infoList = []
 
+@app.before_request
+def make_session_permanent():
+    session.permanent = True
+    app.permanent_session_lifetime = td(minutes=60)
+
 @app.route('/', methods=['GET', 'POST'])
 @login_required
 def index():
